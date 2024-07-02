@@ -4,22 +4,38 @@ const d = (str) => { console.log(str); }
 const e = (str) => { console.error(str); }
 
 function gamepadTest() {
-    const Gamepad = require("node-gamepad");
+    const Gamepad = require("./node-gamepad");
 
-    const gamepad = new Gamepad("ps4/dualshock4"/* , 3090, 3605 */);
-    d(`gamepad=${gamepad}`);
+    const gamepad = new Gamepad("ps4/dualshock4", {
+        vendorID: 3090, 
+        productID: 3605
+    });
+
     gamepad.connect();
+    gamepad.emitRaw(true);
 
-    gamepad.on("up:press", () => {
-        d(`up:press`);
-    });
+    gamepad.on("event", (state) => {
+        d(`event: state=${JSON.stringify(state)}`);
+    })
 
-    gamepad.on("down:press", () => {
-        d(`down:press`);
-    });
+    // gamepad.on("dpadUp:press", (state) => {
+    //     d(`dpadUp: state=${state}`);
+    // });
+
+    // gamepad.on("left:move", (state) => {
+    //     d(`left:move: state=${JSON.stringify(state)}`);
+    // })
+
+    // gamepad.on("up:press", () => {
+    //     d(`up:press`);
+    // });
+
+    // gamepad.on("down:press", () => {
+    //     d(`down:press`);
+    // });
 
     setInterval(() => {
-        d(`beep`)
+        // d(`beep`)
     }, 1000);
 }
 
@@ -56,8 +72,8 @@ function nodeHidTest() {
     setInterval(() => {
 
     }, 1000);
-    
+
 }
 
-nodeHidTest();
-// gamepadTest();
+// nodeHidTest();
+gamepadTest();
