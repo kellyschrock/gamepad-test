@@ -3,13 +3,18 @@
 const d = (str) => { console.log(str); }
 const e = (str) => { console.error(str); }
 
-function gamepadTest() {
+function gamepadTest(vendorId, productId) {
     const Gamepad = require("./node-gamepad");
 
     const gamepad = new Gamepad("ps4/dualshock4", {
-        vendorID: 3090, 
-        productID: 3605
+        vendorID: vendorId,
+        productID: productId
     });
+
+    // const gamepad = new Gamepad("ps4/dualshock4", {
+    //     vendorID: 3090, 
+    //     productID: 3605
+    // });
 
     gamepad.connect();
     gamepad.emitRaw(true);
@@ -37,6 +42,12 @@ function gamepadTest() {
     setInterval(() => {
         // d(`beep`)
     }, 1000);
+}
+
+function listDevices() {
+    const HID = require("node-hid");
+    const devices = HID.devices();
+    console.dir(devices);
 }
 
 function nodeHidTest() {
@@ -75,5 +86,27 @@ function nodeHidTest() {
 
 }
 
-// nodeHidTest();
-gamepadTest();
+switch(process.argv[2]) {
+    case "list": {
+        listDevices();
+        break;
+    }
+
+    case "hid": {
+        nodeHidTest();
+        break;
+    }
+
+    default: {
+        const vendorId = parseInt(process.argv[2]);
+        const productId = parseInt(process.argv[3]);
+
+        if(isNaN(vendorId) || isNaN(productId)) {
+            console.error(`Specify vendorId and productId as numbers`);
+            process.exit(100);
+        }
+
+        gamepadTest(vendorId, productId);
+        break;
+    }
+}
